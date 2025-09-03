@@ -1,12 +1,3 @@
-/* This object runs multithreaded
-*   DisplayContent method read the file data and puts it to content
-*  Thus,no need to reread the file for data
-*   writeContent just appends the data and updates content
-*   Thus,no need to reread the file here as well
-*   However,This object does not delete/remove a part of a file content
-*   Let me know,If I need to add that
-* */
-
 import java.io.*;
 
 public class manageFiles implements Runnable {
