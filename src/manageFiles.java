@@ -54,4 +54,12 @@ public class manageFiles implements Runnable {
             System.out.println("File writing got irreupted");
         }
     }
+
+    public void append(String data) {
+        try (FileWriter writer = new FileWriter(filePath, true)) {
+            writer.write(data);
+        } catch (IOException e) {
+            System.out.println("File appending got interrupted");
+        }
+    }
 }
