@@ -1,15 +1,23 @@
+package com.inventorymanagement;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Scanner;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 
-class Authenticator {
+public class Authenticator {
 
     private static String loggedInUser = null;
 
     public static boolean login(String username, String password) {
         try {
-            File myObj = new File("User.txt");
+            URL resource = Authenticator.class.getClassLoader().getResource("User.txt");
+            if (resource == null) {
+                throw new IllegalArgumentException("file not found! User.txt");
+            }
+            File myObj = new File(resource.toURI());
             Scanner myReader = new Scanner(myObj);
             while (myReader.hasNextLine()) {
                 String data = myReader.nextLine();
@@ -21,7 +29,7 @@ class Authenticator {
                 }
             }
             myReader.close();
-        } catch (FileNotFoundException e) {
+        } catch (FileNotFoundException | URISyntaxException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();
         }
@@ -30,7 +38,11 @@ class Authenticator {
 
     public static boolean signUp(String username, String password) {
         try {
-            File myObj = new File("User.txt");
+            URL resource = Authenticator.class.getClassLoader().getResource("User.txt");
+            if (resource == null) {
+                throw new IllegalArgumentException("file not found! User.txt");
+            }
+            File myObj = new File(resource.toURI());
             Scanner myReader = new Scanner(myObj);
             while (myReader.hasNextLine()) {
                 String data = myReader.nextLine();
@@ -45,7 +57,7 @@ class Authenticator {
             manageFiles mf = new manageFiles("User.txt");
             mf.append("\n" + username + "," + password);
             return true;
-        } catch (FileNotFoundException e) {
+        } catch (FileNotFoundException | URISyntaxException e) {
             System.out.println("An error occurred.");
             e.printStackTrace();
         }
