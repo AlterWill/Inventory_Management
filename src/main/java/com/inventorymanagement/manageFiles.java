@@ -4,7 +4,7 @@ import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-public class manageFiles implements Runnable {
+public class manageFiles {
     StringBuffer content = new StringBuffer();
     String filePath;
 
@@ -35,7 +35,6 @@ public class manageFiles implements Runnable {
         }
     }
 
-    @Override
     public void run(){
         try {
             File f = getFileFromResource();

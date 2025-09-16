@@ -1,0 +1,16 @@
+import org.jdbi.v3.core.Jdbi;
+
+public class Database {
+	Database() {
+
+		Jdbi jdbi=Jdbi.create("jdbc:h2:mem:test");
+		jdbi.withHandle(handle -> {
+		  handle.execute("create table users (id int primary key auto_increment, name varchar(100), password varchar(100))");
+
+		  return null;	
+		});
+		
+
+	}
+
+}
