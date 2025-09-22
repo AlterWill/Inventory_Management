@@ -53,7 +53,7 @@ public class Main {
         //     }
         // }
 		
-		  Database db = new Database();
+		 // Database db = new Database();
         sc.close();
     }
 }
