@@ -1,4 +1,7 @@
+package com.inventorymanagement;
+
 import org.jdbi.v3.core.Jdbi;
+
 
 public class Database {
 	Database() {
