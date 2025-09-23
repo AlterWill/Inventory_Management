@@ -1,2 +1,0 @@
-Hello,This is a message to Stock.txt
-Testing if filewriter works
