@@ -1,10 +1,12 @@
 package com.inventorymanagement;
+import com.app.LoginUI;
 
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
+		  LoginUI ui=new LoginUI();
 
         // while (true) {
         //     if (Authenticator.isLoggedIn()) {
