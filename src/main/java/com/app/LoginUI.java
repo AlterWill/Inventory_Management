@@ -1,6 +1,7 @@
 package com.app;
 
 import javax.swing.*;
+import com.inventorymanagement.Authenticator;
 
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.FlatDarkLaf;
@@ -10,12 +11,17 @@ import com.formdev.flatlaf.ui.FlatButtonUI;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.net.Authenticator;
 
 public class LoginUI extends JFrame implements ActionListener {
   public static String state = "login";
   JButton submitButton;
   JTextField usernameField;
   JPasswordField passwordField;
+  JButton registerButton;
+  JTextField newUsernameField;
+  JPasswordField newPasswordField;
+  JPasswordField confirmPasswordField;
 
   public LoginUI() {
 
@@ -96,7 +102,7 @@ public class LoginUI extends JFrame implements ActionListener {
     JTextField newUsernameField = new JTextField(15);
     JPasswordField newPasswordField = new JPasswordField(15);
     JPasswordField confirmPasswordField = new JPasswordField(15);
-    JButton registerButton = new JButton("Register");
+    registerButton = new JButton("Register");
     gbc2.gridx = 0;
     gbc2.gridy = 0;
     gbc2.gridwidth = 2;
@@ -129,10 +135,38 @@ public class LoginUI extends JFrame implements ActionListener {
   public void actionPerformed(ActionEvent e) {
     if (e.getSource() == submitButton) {
       String a = usernameField.getText();
-      String b = passwordField.getText();
-      // a -> username input
-      // b -> password input
+      String b = new String(passwordField.getPassword());
+      if (Authenticator.login(a, b)) {
+        // go to dashboard here
+        System.out.print("Worked");
+        this.dispose();
+      } else {
+        // login error message
+        usernameField.setText("");
+        passwordField.setText("");
+      }
     }
-
+    if (e.getSource() == registerButton) {
+      String a = newUsernameField.getText();
+      String b = new String(newPasswordField.getPassword());
+      String c = new String(confirmPasswordField.getPassword());
+      if (b != c || a.trim() == "" || b.trim() == "") {
+        // error message
+        newUsernameField.setText("");
+        newPasswordField.setText("");
+        confirmPasswordField.setText("");
+        return;
+      }
+      if (Authenticator.signUp(a, b)) {
+        // go to dashboard here or the login page
+        System.out.print("Worked");
+        this.dispose(); // if going to dashboard only
+      } else {
+        // signup failed message
+        newUsernameField.setText("");
+        newPasswordField.setText("");
+        confirmPasswordField.setText("");
+      }
+    }
   }
 }
