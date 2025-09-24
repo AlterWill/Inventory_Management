@@ -30,5 +30,3 @@ public class UI extends JFrame {
 				add(nav,BorderLayout.NORTH);
 		}
 }
-
-
