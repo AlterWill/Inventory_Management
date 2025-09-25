@@ -53,8 +53,9 @@ public class Authenticator {
           return false;
         }
       }
+
       myReader.close();
-      manageFiles mf = new manageFiles("User.txt");
+      manageFiles mf = new manageFiles(resource.toURI().getPath());
       mf.append("\n" + username + "," + password);
       return true;
     } catch (FileNotFoundException | URISyntaxException e) {

@@ -1,6 +1,8 @@
 package com.app;
 
 import javax.swing.*;
+import javax.swing.text.StyledEditorKit.BoldAction;
+
 import com.inventorymanagement.Authenticator;
 
 import com.formdev.flatlaf.FlatClientProperties;
@@ -99,9 +101,9 @@ public class LoginUI extends JFrame implements ActionListener {
     signupPanel.setVisible(false);
     JLabel signupLabel = new JLabel("Create a new account");
     signupLabel.setHorizontalAlignment(SwingConstants.CENTER);
-    JTextField newUsernameField = new JTextField(15);
-    JPasswordField newPasswordField = new JPasswordField(15);
-    JPasswordField confirmPasswordField = new JPasswordField(15);
+    newUsernameField = new JTextField(15);
+    newPasswordField = new JPasswordField(15);
+    confirmPasswordField = new JPasswordField(15);
     registerButton = new JButton("Register");
     gbc2.gridx = 0;
     gbc2.gridy = 0;
@@ -150,14 +152,23 @@ public class LoginUI extends JFrame implements ActionListener {
       String a = newUsernameField.getText();
       String b = new String(newPasswordField.getPassword());
       String c = new String(confirmPasswordField.getPassword());
-      if (b != c || a.trim() == "" || b.trim() == "") {
+      if (!b.equals(c) || a.trim().isEmpty() || b.trim().isEmpty()) {
         // error message
         newUsernameField.setText("");
         newPasswordField.setText("");
         confirmPasswordField.setText("");
+        System.out.print("hello");
         return;
       }
-      if (Authenticator.signUp(a, b)) {
+      Boolean d;
+      try {
+        d = Authenticator.signUp(a, b);
+      } catch (IllegalArgumentException x) {
+        System.out.print("argument error" + x);
+        return;
+      }
+      System.out.print("D:" + d);
+      if (d) {
         // go to dashboard here or the login page
         System.out.print("Worked");
         this.dispose(); // if going to dashboard only

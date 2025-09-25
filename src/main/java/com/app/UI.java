@@ -21,12 +21,12 @@ public class UI extends JFrame {
     JPanel nav = new JPanel();
     nav.setPreferredSize(new Dimension(100, 40));
     nav.setLayout(new FlowLayout(FlowLayout.RIGHT));
-    nav.getContentPane().setBackground(new Color(34, 34, 34));
+    nav.setBackground(new Color(34, 34, 34));
     JButton button = new JButton("login");
     JButton butt1 = new JButton("signup");
     nav.add(button);
     nav.add(butt1);
 
-    add(nav, BorderLayout.NORTH);
+    this.add(nav, BorderLayout.NORTH);
   }
 }
