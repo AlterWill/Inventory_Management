@@ -7,13 +7,13 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
-public class Authenticator {
+public class LoginAuthenticator {
 
   private static String loggedInUser = null;
 
   public static boolean login(String username, String password) {
     try {
-      URL resource = Authenticator.class.getClassLoader().getResource("User.txt");
+      URL resource = LoginAuthenticator.class.getClassLoader().getResource("User.txt");
       if (resource == null) {
         throw new IllegalArgumentException("file not found! User.txt");
       }
@@ -38,7 +38,7 @@ public class Authenticator {
 
   public static boolean signUp(String username, String password) {
     try {
-      URL resource = Authenticator.class.getClassLoader().getResource("User.txt");
+      URL resource = LoginAuthenticator.class.getClassLoader().getResource("User.txt");
       if (resource == null) {
         throw new IllegalArgumentException("file not found! User.txt");
       }

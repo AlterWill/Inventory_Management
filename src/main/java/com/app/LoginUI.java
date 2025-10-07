@@ -3,7 +3,7 @@ package com.app;
 import javax.swing.*;
 import javax.swing.text.StyledEditorKit.BoldAction;
 
-import com.inventorymanagement.Authenticator;
+import com.inventorymanagement.LoginAuthenticator;
 
 import com.formdev.flatlaf.FlatClientProperties;
 import com.formdev.flatlaf.FlatDarkLaf;
@@ -105,6 +105,7 @@ public class LoginUI extends JFrame implements ActionListener {
     newPasswordField = new JPasswordField(15);
     confirmPasswordField = new JPasswordField(15);
     registerButton = new JButton("Register");
+    registerButton.addActionListener(this);
     gbc2.gridx = 0;
     gbc2.gridy = 0;
     gbc2.gridwidth = 2;
@@ -138,7 +139,7 @@ public class LoginUI extends JFrame implements ActionListener {
     if (e.getSource() == submitButton) {
       String a = usernameField.getText();
       String b = new String(passwordField.getPassword());
-      if (Authenticator.login(a, b)) {
+      if (LoginAuthenticator.login(a, b)) {
         // go to dashboard here
         System.out.print("Worked");
         this.dispose();
@@ -162,7 +163,7 @@ public class LoginUI extends JFrame implements ActionListener {
       }
       Boolean d;
       try {
-        d = Authenticator.signUp(a, b);
+        d = LoginAuthenticator.signUp(a, b);
       } catch (IllegalArgumentException x) {
         System.out.print("argument error" + x);
         return;
