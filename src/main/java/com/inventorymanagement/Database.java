@@ -62,9 +62,6 @@ public class Database implements AutoCloseable {
     return "";
   }
 
-  /**
-   * Write (replace) content for a path. Creates the row if it doesn't exist.
-   */
   public void writeContent(String path, String data) {
     if (path == null)
       return;
@@ -87,9 +84,6 @@ public class Database implements AutoCloseable {
     }
   }
 
-  /**
-   * Append data to existing content (or create new row if missing).
-   */
   public void append(String path, String data) {
     if (path == null)
       return;
@@ -98,9 +92,6 @@ public class Database implements AutoCloseable {
     writeContent(path, combined);
   }
 
-  /**
-   * Print content to stdout similar to DisplayContent in manageFiles
-   */
   public void displayContent(String path) {
     String content = readContent(path);
     System.out.println("Contents of " + path + ":\n" + content);

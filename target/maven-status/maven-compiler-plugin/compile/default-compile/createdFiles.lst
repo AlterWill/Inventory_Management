@@ -1,0 +1,6 @@
+com/inventorymanagement/Main.class
+com/app/UI.class
+com/inventorymanagement/Database.class
+com/app/LoginUI.class
+com/inventorymanagement/LoginAuthenticator.class
+com/inventorymanagement/manageFiles.class
