@@ -26,7 +26,7 @@ public class LoginUI extends JFrame {
         }
 
         setTitle("Inventory Management System - Login");
-        setSize(450, 350);
+        setSize(450, Database.isUsingFallbackMode() ? 400 : 350);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
         setResizable(false);
@@ -36,9 +36,21 @@ public class LoginUI extends JFrame {
 
         // Title Panel
         JPanel titlePanel = new JPanel();
+        titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.Y_AXIS));
         JLabel titleLabel = new JLabel("Inventory Management System");
         titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
         titlePanel.add(titleLabel);
+        
+        // Add fallback mode warning if applicable
+        if (Database.isUsingFallbackMode()) {
+            JLabel warningLabel = new JLabel("⚠ IN-MEMORY MODE - Data will not be saved");
+            warningLabel.setFont(new Font("Segoe UI", Font.BOLD, 11));
+            warningLabel.setForeground(new Color(255, 165, 0));
+            warningLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+            titlePanel.add(Box.createVerticalStrut(5));
+            titlePanel.add(warningLabel);
+        }
 
         // Login Form Panel
         JPanel formPanel = new JPanel(new GridBagLayout());
@@ -126,10 +138,15 @@ public class LoginUI extends JFrame {
         User user = userDAO.authenticate(username, password);
 
         if (user != null) {
+            String welcomeMessage = "Welcome, " + user.getFullName() + "!";
+            if (Database.isUsingFallbackMode()) {
+                welcomeMessage += "\n\n⚠ Running in IN-MEMORY mode\nData will not be persisted!";
+            }
+            
             JOptionPane.showMessageDialog(this,
-                    "Welcome, " + user.getFullName() + "!",
+                    welcomeMessage,
                     "Login Successful",
-                    JOptionPane.INFORMATION_MESSAGE);
+                    Database.isUsingFallbackMode() ? JOptionPane.WARNING_MESSAGE : JOptionPane.INFORMATION_MESSAGE);
 
             // Open appropriate dashboard based on role
             if (user.isAdmin()) {

@@ -2,6 +2,7 @@ package com.inventorymanagement.dao;
 
 import com.inventorymanagement.Database;
 import com.inventorymanagement.models.Transaction;
+import com.inventorymanagement.storage.InMemoryStorage;
 import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
@@ -10,6 +11,10 @@ import java.util.List;
 public class TransactionDAO {
     
     public boolean addTransaction(Transaction transaction) {
+        if (Database.isUsingFallbackMode()) {
+            return InMemoryStorage.addTransaction(transaction);
+        }
+        
         Connection conn = null;
         try {
             conn = Database.getConnection();
@@ -80,6 +85,10 @@ public class TransactionDAO {
     }
     
     public List<Transaction> getAllTransactions() {
+        if (Database.isUsingFallbackMode()) {
+            return InMemoryStorage.getAllTransactions();
+        }
+        
         List<Transaction> transactions = new ArrayList<>();
         String sql = """
             SELECT t.*, p.name as product_name, u.username 
@@ -103,6 +112,10 @@ public class TransactionDAO {
     }
     
     public List<Transaction> getTransactionsByType(String type) {
+        if (Database.isUsingFallbackMode()) {
+            return InMemoryStorage.getTransactionsByType(type);
+        }
+        
         List<Transaction> transactions = new ArrayList<>();
         String sql = """
             SELECT t.*, p.name as product_name, u.username 
@@ -129,6 +142,10 @@ public class TransactionDAO {
     }
     
     public BigDecimal getTotalSales() {
+        if (Database.isUsingFallbackMode()) {
+            return InMemoryStorage.getTotalSales();
+        }
+        
         String sql = "SELECT COALESCE(SUM(total_amount), 0) as total FROM transactions WHERE transaction_type = 'SALE'";
         try (Connection conn = Database.getConnection();
              Statement stmt = conn.createStatement();
@@ -144,6 +161,10 @@ public class TransactionDAO {
     }
     
     public BigDecimal getTotalTaxCollected() {
+        if (Database.isUsingFallbackMode()) {
+            return InMemoryStorage.getTotalTaxCollected();
+        }
+        
         String sql = "SELECT COALESCE(SUM(tax_amount), 0) as total FROM transactions WHERE transaction_type = 'SALE'";
         try (Connection conn = Database.getConnection();
              Statement stmt = conn.createStatement();

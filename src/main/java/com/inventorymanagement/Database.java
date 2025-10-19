@@ -7,8 +7,13 @@ public class Database {
     private static final String USER = "postgres";
     private static final String PASSWORD = "postgres";
     private static Connection connection = null;
+    private static boolean useFallbackMode = false;
 
     public static Connection getConnection() {
+        if (useFallbackMode) {
+            return null; // Return null to indicate in-memory mode
+        }
+        
         try {
             if (connection == null || connection.isClosed()) {
                 Class.forName("org.postgresql.Driver");
@@ -17,14 +22,19 @@ public class Database {
             }
         } catch (ClassNotFoundException | SQLException e) {
             System.err.println("Database connection failed: " + e.getMessage());
-            e.printStackTrace();
+            enableFallbackMode();
         }
         return connection;
     }
 
     public static void initializeDatabase() {
         try (Connection conn = getConnection();
-             Statement stmt = conn.createStatement()) {
+             Statement stmt = conn != null ? conn.createStatement() : null) {
+
+            if (conn == null || stmt == null) {
+                System.out.println("⚠ Using IN-MEMORY FALLBACK MODE - Data will not be persisted!");
+                return;
+            }
 
             // Create users table (employees and admin)
             String createUsersTable = """
@@ -89,7 +99,7 @@ public class Database {
 
         } catch (SQLException e) {
             System.err.println("Database initialization failed: " + e.getMessage());
-            e.printStackTrace();
+            enableFallbackMode();
         }
     }
 
@@ -101,6 +111,21 @@ public class Database {
             }
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+    
+    public static boolean isUsingFallbackMode() {
+        return useFallbackMode;
+    }
+    
+    private static void enableFallbackMode() {
+        if (!useFallbackMode) {
+            useFallbackMode = true;
+            System.out.println("\n" + "=".repeat(60));
+            System.out.println("⚠ DATABASE CONNECTION FAILED!");
+            System.out.println("⚠ FALLBACK MODE ENABLED - Using In-Memory Storage");
+            System.out.println("⚠ All data will be lost when the application closes!");
+            System.out.println("=".repeat(60) + "\n");
         }
     }
 }

@@ -2,6 +2,7 @@ package com.inventorymanagement.dao;
 
 import com.inventorymanagement.Database;
 import com.inventorymanagement.models.Product;
+import com.inventorymanagement.storage.InMemoryStorage;
 import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
@@ -10,6 +11,10 @@ import java.util.List;
 public class ProductDAO {
     
     public boolean addProduct(Product product) {
+        if (Database.isUsingFallbackMode()) {
+            return InMemoryStorage.addProduct(product);
+        }
+        
         String sql = "INSERT INTO products (name, description, category, price, stock_quantity, minimum_stock) VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection conn = Database.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -29,6 +34,10 @@ public class ProductDAO {
     }
     
     public List<Product> getAllProducts() {
+        if (Database.isUsingFallbackMode()) {
+            return InMemoryStorage.getAllProducts();
+        }
+        
         List<Product> products = new ArrayList<>();
         String sql = "SELECT * FROM products ORDER BY name";
         
@@ -46,6 +55,10 @@ public class ProductDAO {
     }
     
     public Product getProductById(int id) {
+        if (Database.isUsingFallbackMode()) {
+            return InMemoryStorage.getProductById(id);
+        }
+        
         String sql = "SELECT * FROM products WHERE id = ?";
         try (Connection conn = Database.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -63,6 +76,10 @@ public class ProductDAO {
     }
     
     public boolean updateProduct(Product product) {
+        if (Database.isUsingFallbackMode()) {
+            return InMemoryStorage.updateProduct(product);
+        }
+        
         String sql = "UPDATE products SET name = ?, description = ?, category = ?, price = ?, stock_quantity = ?, minimum_stock = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?";
         try (Connection conn = Database.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -83,6 +100,10 @@ public class ProductDAO {
     }
     
     public boolean updateStock(int productId, int newQuantity) {
+        if (Database.isUsingFallbackMode()) {
+            return InMemoryStorage.updateStock(productId, newQuantity);
+        }
+        
         String sql = "UPDATE products SET stock_quantity = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?";
         try (Connection conn = Database.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -98,6 +119,10 @@ public class ProductDAO {
     }
     
     public boolean deleteProduct(int productId) {
+        if (Database.isUsingFallbackMode()) {
+            return InMemoryStorage.deleteProduct(productId);
+        }
+        
         String sql = "DELETE FROM products WHERE id = ?";
         try (Connection conn = Database.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -111,6 +136,10 @@ public class ProductDAO {
     }
     
     public List<Product> getLowStockProducts() {
+        if (Database.isUsingFallbackMode()) {
+            return InMemoryStorage.getLowStockProducts();
+        }
+        
         List<Product> products = new ArrayList<>();
         String sql = "SELECT * FROM products WHERE stock_quantity <= minimum_stock ORDER BY stock_quantity";
         

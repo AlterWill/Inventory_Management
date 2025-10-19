@@ -18,21 +18,36 @@ A comprehensive inventory management software for small businesses built with Ja
 - **Advanced Reports**: Net revenue calculations and comprehensive business analytics
 - **Full System Control**: Complete access to all inventory operations
 
+### 🆕 Automatic Fallback Mode:
+- **No Database? No Problem!**: Application automatically switches to in-memory storage if PostgreSQL is unavailable
+- **Zero Configuration**: Works out of the box for testing without database setup
+- **Seamless Operation**: All features work identically in both modes
+- **Visual Indicators**: Clear warnings when running in fallback mode
+- **Perfect for Testing**: Test the application without database installation
+
 ## Technology Stack
 
 - **Language**: Java 24
 - **GUI Framework**: Java Swing with FlatLaf Dark theme
-- **Database**: PostgreSQL
+- **Database**: PostgreSQL (with in-memory fallback)
 - **JDBC**: Direct JDBC for database operations
 - **Build Tool**: Maven
 
 ## Prerequisites
 
+### For Full Database Mode:
 1. Java JDK 24 or higher
 2. PostgreSQL database server
 3. Maven
 
+### For Testing/Fallback Mode:
+1. Java JDK 24 or higher
+2. Maven
+3. *(No database required!)*
+
 ## Database Setup
+
+### Option 1: PostgreSQL (Persistent Storage)
 
 1. Install PostgreSQL on your system
 2. Create a database named `inventory_db`:
@@ -44,6 +59,14 @@ A comprehensive inventory management software for small businesses built with Ja
    - Default URL: `jdbc:postgresql://localhost:5432/inventory_db`
    - Default User: `postgres`
    - Default Password: `postgres`
+
+### Option 2: In-Memory Mode (Testing)
+
+Simply run the application! If PostgreSQL is not available or the connection fails, the application will automatically:
+- Switch to **in-memory storage mode**
+- Display clear warnings
+- Function normally with all features
+- **Note**: Data will not be persisted between sessions
 
 ## Installation & Running
 
@@ -59,6 +82,11 @@ A comprehensive inventory management software for small businesses built with Ja
    mvn exec:java
    ```
 
+**What happens on startup:**
+- Application attempts to connect to PostgreSQL
+- If successful: Uses database for persistent storage
+- If failed: Automatically switches to in-memory mode with a warning message
+
 ## Default Login Credentials
 
 **Admin Account:**
@@ -66,6 +94,37 @@ A comprehensive inventory management software for small businesses built with Ja
 - Password: `admin123`
 
 After logging in as admin, you can create employee accounts.
+
+## Fallback Mode Details
+
+### When Fallback Mode Activates:
+- PostgreSQL is not installed
+- Database server is not running
+- Connection credentials are incorrect
+- Database doesn't exist
+- Network issues prevent connection
+
+### Visual Indicators:
+1. **Console Output**: Clear warning message with "⚠" symbol
+2. **Login Screen**: Orange warning banner showing "IN-MEMORY MODE"
+3. **Login Success**: Warning message about data not being persisted
+
+### Fallback Mode Features:
+✅ All functionality works identically
+✅ User authentication and management
+✅ Product CRUD operations
+✅ Transaction processing with stock updates
+✅ Reports and analytics
+✅ Tax calculations
+❌ Data is NOT saved when application closes
+❌ No persistence between sessions
+
+### Use Cases for Fallback Mode:
+- **Quick Testing**: Test the application without database setup
+- **Development**: Rapid development and debugging
+- **Demonstrations**: Show application features without infrastructure
+- **Training**: Train staff without affecting production data
+- **Offline Work**: Work when database is temporarily unavailable
 
 ## Database Schema
 

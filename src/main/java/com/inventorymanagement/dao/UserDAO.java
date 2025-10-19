@@ -2,6 +2,7 @@ package com.inventorymanagement.dao;
 
 import com.inventorymanagement.Database;
 import com.inventorymanagement.models.User;
+import com.inventorymanagement.storage.InMemoryStorage;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,6 +10,10 @@ import java.util.List;
 public class UserDAO {
     
     public User authenticate(String username, String password) {
+        if (Database.isUsingFallbackMode()) {
+            return InMemoryStorage.authenticateUser(username, password);
+        }
+        
         String sql = "SELECT * FROM users WHERE username = ? AND password = ? AND is_active = true";
         try (Connection conn = Database.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -27,6 +32,10 @@ public class UserDAO {
     }
     
     public boolean createUser(String username, String password, String fullName, String role) {
+        if (Database.isUsingFallbackMode()) {
+            return InMemoryStorage.createUser(username, password, fullName, role);
+        }
+        
         String sql = "INSERT INTO users (username, password, full_name, role) VALUES (?, ?, ?, ?)";
         try (Connection conn = Database.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -44,6 +53,10 @@ public class UserDAO {
     }
     
     public List<User> getAllEmployees() {
+        if (Database.isUsingFallbackMode()) {
+            return InMemoryStorage.getAllEmployees();
+        }
+        
         List<User> users = new ArrayList<>();
         String sql = "SELECT * FROM users WHERE role = 'EMPLOYEE' ORDER BY created_at DESC";
         
@@ -61,6 +74,10 @@ public class UserDAO {
     }
     
     public boolean updateUser(int userId, String fullName, boolean isActive) {
+        if (Database.isUsingFallbackMode()) {
+            return InMemoryStorage.updateUser(userId, fullName, isActive);
+        }
+        
         String sql = "UPDATE users SET full_name = ?, is_active = ? WHERE id = ?";
         try (Connection conn = Database.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
@@ -77,6 +94,10 @@ public class UserDAO {
     }
     
     public boolean deleteUser(int userId) {
+        if (Database.isUsingFallbackMode()) {
+            return InMemoryStorage.deleteUser(userId);
+        }
+        
         String sql = "DELETE FROM users WHERE id = ? AND role != 'ADMIN'";
         try (Connection conn = Database.getConnection();
              PreparedStatement pstmt = conn.prepareStatement(sql)) {
