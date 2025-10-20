@@ -3,4 +3,14 @@
 /home/alterwill/Github/Inventory_Management/src/main/java/com/inventorymanagement/Database.java
 /home/alterwill/Github/Inventory_Management/src/main/java/com/inventorymanagement/LoginAuthenticator.java
 /home/alterwill/Github/Inventory_Management/src/main/java/com/inventorymanagement/Main.java
+/home/alterwill/Github/Inventory_Management/src/main/java/com/inventorymanagement/dao/ProductDAO.java
+/home/alterwill/Github/Inventory_Management/src/main/java/com/inventorymanagement/dao/TransactionDAO.java
+/home/alterwill/Github/Inventory_Management/src/main/java/com/inventorymanagement/dao/UserDAO.java
 /home/alterwill/Github/Inventory_Management/src/main/java/com/inventorymanagement/manageFiles.java
+/home/alterwill/Github/Inventory_Management/src/main/java/com/inventorymanagement/models/Product.java
+/home/alterwill/Github/Inventory_Management/src/main/java/com/inventorymanagement/models/Transaction.java
+/home/alterwill/Github/Inventory_Management/src/main/java/com/inventorymanagement/models/User.java
+/home/alterwill/Github/Inventory_Management/src/main/java/com/inventorymanagement/storage/InMemoryStorage.java
+/home/alterwill/Github/Inventory_Management/src/main/java/com/inventorymanagement/ui/AdminDashboard.java
+/home/alterwill/Github/Inventory_Management/src/main/java/com/inventorymanagement/ui/EmployeeDashboard.java
+/home/alterwill/Github/Inventory_Management/src/main/java/com/inventorymanagement/ui/LoginUI.java
