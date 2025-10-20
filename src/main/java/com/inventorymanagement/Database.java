@@ -2,109 +2,130 @@ package com.inventorymanagement;
 
 import java.sql.*;
 
-public class Database implements AutoCloseable {
-  private Connection conn;
-  private final String url;
-  private final String username;
-  private final String password;
-  private final String tableName;
+public class Database {
+    private static final String URL = "jdbc:postgresql://localhost:5432/inventory_db";
+    private static final String USER = "postgres";
+    private static final String PASSWORD = "postgres";
+    private static Connection connection = null;
+    private static boolean useFallbackMode = false;
 
-  public Database(String url, String username, String password, String tableName) {
-    this.url = url;
-    this.username = username;
-    this.password = password;
-    this.tableName = tableName == null || tableName.isBlank() ? "file_storage" : tableName;
-    connectAndInit();
-  }
-
-  private void connectAndInit() {
-    try {
-      // Load driver (modern driver auto-registers but loading explicitly is safe)
-      Class.forName("com.mysql.cj.jdbc.Driver");
-      conn = DriverManager.getConnection(url, username, password);
-      createTableIfNotExists();
-    } catch (ClassNotFoundException e) {
-      System.err.println("JDBC Driver not found: " + e.getMessage());
-    } catch (SQLException e) {
-      System.err.println("Failed to connect or initialize database: " + e.getMessage());
-    }
-  }
-
-  private void createTableIfNotExists() throws SQLException {
-    String sql = "CREATE TABLE IF NOT EXISTS `" + tableName + "` ("
-        + "`id` INT AUTO_INCREMENT PRIMARY KEY,"
-        + "`path` VARCHAR(255) NOT NULL UNIQUE,"
-        + "`content` LONGTEXT"
-        + ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;";
-    try (Statement stmt = conn.createStatement()) {
-      stmt.execute(sql);
-    }
-  }
-
-  /**
-   * Read content for a given path. Returns empty string if not present.
-   */
-  public String readContent(String path) {
-    if (path == null)
-      return "";
-    String sql = "SELECT content FROM `" + tableName + "` WHERE path = ? LIMIT 1";
-    try (PreparedStatement ps = conn.prepareStatement(sql)) {
-      ps.setString(1, path);
-      try (ResultSet rs = ps.executeQuery()) {
-        if (rs.next()) {
-          String content = rs.getString("content");
-          return content == null ? "" : content;
+    public static Connection getConnection() {
+        if (useFallbackMode) {
+            return null; // Return null to indicate in-memory mode
         }
-      }
-    } catch (SQLException e) {
-      System.err.println("Error reading content for " + path + ": " + e.getMessage());
-    }
-    return "";
-  }
-
-  public void writeContent(String path, String data) {
-    if (path == null)
-      return;
-    String updateSql = "UPDATE `" + tableName + "` SET content = ? WHERE path = ?";
-    try (PreparedStatement ps = conn.prepareStatement(updateSql)) {
-      ps.setString(1, data);
-      ps.setString(2, path);
-      int rows = ps.executeUpdate();
-      if (rows == 0) {
-        // insert
-        String insertSql = "INSERT INTO `" + tableName + "` (path, content) VALUES (?, ?)";
-        try (PreparedStatement ip = conn.prepareStatement(insertSql)) {
-          ip.setString(1, path);
-          ip.setString(2, data);
-          ip.executeUpdate();
+        
+        try {
+            if (connection == null || connection.isClosed()) {
+                Class.forName("org.postgresql.Driver");
+                connection = DriverManager.getConnection(URL, USER, PASSWORD);
+                System.out.println("Database connected successfully!");
+            }
+        } catch (ClassNotFoundException | SQLException e) {
+            System.err.println("Database connection failed: " + e.getMessage());
+            enableFallbackMode();
         }
-      }
-    } catch (SQLException e) {
-      System.err.println("Error writing content for " + path + ": " + e.getMessage());
+        return connection;
     }
-  }
 
-  public void append(String path, String data) {
-    if (path == null)
-      return;
-    String current = readContent(path);
-    String combined = current + (data == null ? "" : data);
-    writeContent(path, combined);
-  }
+    public static void initializeDatabase() {
+        try (Connection conn = getConnection();
+             Statement stmt = conn != null ? conn.createStatement() : null) {
 
-  public void displayContent(String path) {
-    String content = readContent(path);
-    System.out.println("Contents of " + path + ":\n" + content);
-  }
+            if (conn == null || stmt == null) {
+                System.out.println("⚠ Using IN-MEMORY FALLBACK MODE - Data will not be persisted!");
+                return;
+            }
 
-  @Override
-  public void close() {
-    if (conn != null) {
-      try {
-        conn.close();
-      } catch (SQLException e) {
-        System.err.println("Error closing connection: " + e.getMessage());
-      }
+            // Create users table (employees and admin)
+            String createUsersTable = """
+                CREATE TABLE IF NOT EXISTS users (
+                    id SERIAL PRIMARY KEY,
+                    username VARCHAR(50) UNIQUE NOT NULL,
+                    password VARCHAR(100) NOT NULL,
+                    full_name VARCHAR(100) NOT NULL,
+                    role VARCHAR(20) NOT NULL CHECK (role IN ('ADMIN', 'EMPLOYEE')),
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    is_active BOOLEAN DEFAULT true
+                )
+            """;
+            stmt.execute(createUsersTable);
+
+            // Create products table
+            String createProductsTable = """
+                CREATE TABLE IF NOT EXISTS products (
+                    id SERIAL PRIMARY KEY,
+                    name VARCHAR(100) NOT NULL,
+                    description TEXT,
+                    category VARCHAR(50),
+                    price DECIMAL(10, 2) NOT NULL,
+                    stock_quantity INTEGER NOT NULL DEFAULT 0,
+                    minimum_stock INTEGER DEFAULT 10,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                )
+            """;
+            stmt.execute(createProductsTable);
+
+            // Create transactions table
+            String createTransactionsTable = """
+                CREATE TABLE IF NOT EXISTS transactions (
+                    id SERIAL PRIMARY KEY,
+                    product_id INTEGER REFERENCES products(id) ON DELETE CASCADE,
+                    user_id INTEGER REFERENCES users(id),
+                    transaction_type VARCHAR(20) NOT NULL CHECK (transaction_type IN ('SALE', 'PURCHASE', 'RETURN')),
+                    quantity INTEGER NOT NULL,
+                    price_per_unit DECIMAL(10, 2) NOT NULL,
+                    total_amount DECIMAL(10, 2) NOT NULL,
+                    tax_amount DECIMAL(10, 2) DEFAULT 0,
+                    transaction_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    notes TEXT
+                )
+            """;
+            stmt.execute(createTransactionsTable);
+
+            // Insert default admin if not exists
+            String checkAdmin = "SELECT COUNT(*) FROM users WHERE role = 'ADMIN'";
+            ResultSet rs = stmt.executeQuery(checkAdmin);
+            if (rs.next() && rs.getInt(1) == 0) {
+                String insertAdmin = """
+                    INSERT INTO users (username, password, full_name, role) 
+                    VALUES ('admin', 'admin123', 'System Administrator', 'ADMIN')
+                """;
+                stmt.execute(insertAdmin);
+                System.out.println("Default admin created (username: admin, password: admin123)");
+            }
+
+            System.out.println("Database initialized successfully!");
+
+        } catch (SQLException e) {
+            System.err.println("Database initialization failed: " + e.getMessage());
+            enableFallbackMode();
+        }
     }
-  }
+
+    public static void closeConnection() {
+        try {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+                System.out.println("Database connection closed.");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public static boolean isUsingFallbackMode() {
+        return useFallbackMode;
+    }
+    
+    private static void enableFallbackMode() {
+        if (!useFallbackMode) {
+            useFallbackMode = true;
+            System.out.println("\n" + "=".repeat(60));
+            System.out.println("⚠ DATABASE CONNECTION FAILED!");
+            System.out.println("⚠ FALLBACK MODE ENABLED - Using In-Memory Storage");
+            System.out.println("⚠ All data will be lost when the application closes!");
+            System.out.println("=".repeat(60) + "\n");
+        }
+    }
 }
