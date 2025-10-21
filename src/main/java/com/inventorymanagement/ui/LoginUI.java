@@ -19,6 +19,7 @@ public class LoginUI extends JFrame {
     }
 
     private void initializeUI() {
+
         try {
             UIManager.setLookAndFeel(new FlatDarkLaf());
         } catch (Exception e) {
@@ -44,9 +45,9 @@ public class LoginUI extends JFrame {
         
         // Add fallback mode warning if applicable
         if (Database.isUsingFallbackMode()) {
-            JLabel warningLabel = new JLabel("⚠ IN-MEMORY MODE - Data will not be saved");
+            JLabel warningLabel = new JLabel("");
             warningLabel.setFont(new Font("Segoe UI", Font.BOLD, 11));
-            warningLabel.setForeground(new Color(255, 165, 0));
+            // warningLabel.setForeground(new Color(255, 165, 0));
             warningLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
             titlePanel.add(Box.createVerticalStrut(5));
             titlePanel.add(warningLabel);
@@ -140,7 +141,7 @@ public class LoginUI extends JFrame {
         if (user != null) {
             String welcomeMessage = "Welcome, " + user.getFullName() + "!";
             if (Database.isUsingFallbackMode()) {
-                welcomeMessage += "\n\n⚠ Running in IN-MEMORY mode\nData will not be persisted!";
+                welcomeMessage += "\n\nRunning in local memory mode\nData will not be persisted!";
             }
             
             JOptionPane.showMessageDialog(this,

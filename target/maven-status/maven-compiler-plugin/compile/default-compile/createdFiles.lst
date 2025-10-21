@@ -12,8 +12,6 @@ com/inventorymanagement/ui/EmployeeDashboard$2.class
 com/inventorymanagement/dao/TransactionDAO.class
 com/inventorymanagement/Database.class
 com/inventorymanagement/dao/UserDAO.class
-com/inventorymanagement/Authenticator.class
 com/inventorymanagement/ui/LoginUI.class
-com/inventorymanagement/manageFiles.class
 com/inventorymanagement/ui/AdminDashboard.class
 com/inventorymanagement/dao/ProductDAO.class

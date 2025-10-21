@@ -122,9 +122,9 @@ public class Database {
         if (!useFallbackMode) {
             useFallbackMode = true;
             System.out.println("\n" + "=".repeat(60));
-            System.out.println("⚠ DATABASE CONNECTION FAILED!");
-            System.out.println("⚠ FALLBACK MODE ENABLED - Using In-Memory Storage");
-            System.out.println("⚠ All data will be lost when the application closes!");
+            System.out.println("DATABASE CONNECTION FAILED!");
+            System.out.println("FALLBACK MODE ENABLED - Using In-Memory Storage");
+            System.out.println("All data will be lost when the application closes!");
             System.out.println("=".repeat(60) + "\n");
         }
     }

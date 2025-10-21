@@ -35,6 +35,7 @@ public class InMemoryStorage {
     }
     
     // User operations
+
     public static User authenticateUser(String username, String password) {
         return users.values().stream()
             .filter(u -> u.getUsername().equals(username) && 
