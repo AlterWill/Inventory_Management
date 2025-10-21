@@ -8,8 +8,6 @@ public class Main {
         Database.initializeDatabase();
         
         // Launch the login UI
-        javax.swing.SwingUtilities.invokeLater(() -> {
-            new LoginUI();
-        });
+        new LoginUI();
     }
 }

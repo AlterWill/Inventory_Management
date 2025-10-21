@@ -3,7 +3,7 @@ package com.inventorymanagement;
 import java.sql.*;
 
 public class Database {
-    private static final String URL = "jdbc:postgresql://localhost:5432/inventory_db";
+    private static final String URL = "jdbc:postgresql://localhost:5432/inventory_db"; 
     private static final String USER = "postgres";
     private static final String PASSWORD = "postgres";
     private static Connection connection = null;
@@ -32,7 +32,7 @@ public class Database {
              Statement stmt = conn != null ? conn.createStatement() : null) {
 
             if (conn == null || stmt == null) {
-                System.out.println("⚠ Using IN-MEMORY FALLBACK MODE - Data will not be persisted!");
+                System.out.println("!! Using IN-MEMORY FALLBACK MODE - Data will not be persisted!");
                 return;
             }
 

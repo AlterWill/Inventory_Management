@@ -1,4 +1,14 @@
 /home/atoms/programming/java-try/Inventory_Management/src/main/java/com/inventorymanagement/Authenticator.java
 /home/atoms/programming/java-try/Inventory_Management/src/main/java/com/inventorymanagement/Database.java
 /home/atoms/programming/java-try/Inventory_Management/src/main/java/com/inventorymanagement/Main.java
+/home/atoms/programming/java-try/Inventory_Management/src/main/java/com/inventorymanagement/dao/ProductDAO.java
+/home/atoms/programming/java-try/Inventory_Management/src/main/java/com/inventorymanagement/dao/TransactionDAO.java
+/home/atoms/programming/java-try/Inventory_Management/src/main/java/com/inventorymanagement/dao/UserDAO.java
 /home/atoms/programming/java-try/Inventory_Management/src/main/java/com/inventorymanagement/manageFiles.java
+/home/atoms/programming/java-try/Inventory_Management/src/main/java/com/inventorymanagement/models/Product.java
+/home/atoms/programming/java-try/Inventory_Management/src/main/java/com/inventorymanagement/models/Transaction.java
+/home/atoms/programming/java-try/Inventory_Management/src/main/java/com/inventorymanagement/models/User.java
+/home/atoms/programming/java-try/Inventory_Management/src/main/java/com/inventorymanagement/storage/InMemoryStorage.java
+/home/atoms/programming/java-try/Inventory_Management/src/main/java/com/inventorymanagement/ui/AdminDashboard.java
+/home/atoms/programming/java-try/Inventory_Management/src/main/java/com/inventorymanagement/ui/EmployeeDashboard.java
+/home/atoms/programming/java-try/Inventory_Management/src/main/java/com/inventorymanagement/ui/LoginUI.java
