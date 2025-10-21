@@ -74,12 +74,66 @@ public class AdminDashboard extends JFrame {
         tabbedPane.addTab("Products", createProductsPanel());
         tabbedPane.addTab("Transactions", createTransactionsPanel());
         tabbedPane.addTab("Reports", createReportsPanel());
+        tabbedPane.addTab("Settings", createSettingsPanel());
 
         mainPanel.add(topPanel, BorderLayout.NORTH);
         mainPanel.add(tabbedPane, BorderLayout.CENTER);
 
         add(mainPanel);
         setVisible(true);
+    }
+
+    private JPanel createSettingsPanel() {
+        JPanel panel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        JLabel titleLabel = new JLabel("Admin Settings");
+        titleLabel.setFont(new Font("Segoe UI", Font.BOLD, 20));
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        gbc.gridwidth = 2;
+        panel.add(titleLabel, gbc);
+
+        gbc.gridy++;
+        gbc.gridwidth = 1;
+        
+        panel.add(new JLabel("New Password:"), gbc);
+
+        gbc.gridx = 1;
+        JPasswordField newPasswordField = new JPasswordField(20);
+        panel.add(newPasswordField, gbc);
+
+        gbc.gridy++;
+        gbc.gridx = 0;
+        gbc.gridwidth = 2;
+        JButton changePasswordButton = new JButton("Change Password");
+        panel.add(changePasswordButton, gbc);
+
+        changePasswordButton.addActionListener(e -> {
+            String newPassword = new String(newPasswordField.getPassword());
+            if (newPassword.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Password cannot be empty.", "Error", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            int confirm = JOptionPane.showConfirmDialog(this,
+                    "Are you sure you want to change your password?",
+                    "Confirm Password Change",
+                    JOptionPane.YES_NO_OPTION);
+
+            if (confirm == JOptionPane.YES_OPTION) {
+                if (userDAO.updatePassword(currentUser.getId(), newPassword)) {
+                    JOptionPane.showMessageDialog(this, "Password updated successfully!");
+                    newPasswordField.setText("");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Failed to update password!", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
+        return panel;
     }
 
     private JPanel createDashboardPanel() {

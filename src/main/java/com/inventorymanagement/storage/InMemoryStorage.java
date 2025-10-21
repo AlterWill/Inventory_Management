@@ -92,6 +92,15 @@ public class InMemoryStorage {
         return false;
     }
     
+    public static boolean updatePassword(int userId, String newPassword) {
+        User user = users.get(userId);
+        if (user != null) {
+            user.setPassword(newPassword);
+            return true;
+        }
+        return false;
+    }
+    
     // Product operations
     public static boolean addProduct(Product product) {
         product.setId(productIdGenerator.getAndIncrement());

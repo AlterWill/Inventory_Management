@@ -93,6 +93,25 @@ public class UserDAO {
         return false;
     }
     
+    public boolean updatePassword(int userId, String newPassword) {
+        if (Database.isUsingFallbackMode()) {
+            return InMemoryStorage.updatePassword(userId, newPassword);
+        }
+        
+        String sql = "UPDATE users SET password = ? WHERE id = ?";
+        try (Connection conn = Database.getConnection();
+             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            
+            pstmt.setString(1, newPassword);
+            pstmt.setInt(2, userId);
+            
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    
     public boolean deleteUser(int userId) {
         if (Database.isUsingFallbackMode()) {
             return InMemoryStorage.deleteUser(userId);
